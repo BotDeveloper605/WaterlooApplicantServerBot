@@ -35,8 +35,13 @@ class AdmissionsData():
 
     # Convert from a program code to the full name
     # WARN: This can throw errors when the program code is not found.. handle at caller.
-    def __translate_program_code(self, program_code: str) -> str:
+    def translate_program_code(self, program_code: str) -> str:
         return self.__program_codes.loc[self.__program_codes['Code'] == program_code, 'Long'].iloc[0]
+
+    # Convert from a program full name to the program code
+    # WARN: This can throw erros when the program name is not found.. handle at the caller
+    def get_program_code(self, program_name: str) -> str:
+        return self.__program_codes.loc[self.__program_codes['Long'] == program_name, 'Code'].iloc[0]
 
     # Get program enrollment numbers
     # WARN: This can throw errors when the program code is not found.. handle at caller.
@@ -79,6 +84,8 @@ class AdmissionsData():
                 data_slice['Grade Percentage'].max(),
                 len(data_slice['Grade Percentage']))
 
+    def get_data(self):
+        return self.__data
 
 if __name__ == "__main__":
     admissions_data = AdmissionsData(2021)
