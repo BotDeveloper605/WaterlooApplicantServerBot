@@ -24,11 +24,24 @@ class AdmissionsData():
         # == Load program abbreviations == 
         self.__abbreviations = pandas.read_csv('abbreviations.csv')
 
+        # == Load program codes ==
+        self.__program_codes = pandas.read_csv('program_codes.csv')
+
     # Convert from a short version to the full names
-    def __translate_program_name(self, program_name):
+    def __translate_program_name(self, program_name: str) -> str:
         if (program_name in self.__abbreviations['Short'].unique()):
             program_name = self.__abbreviations.loc[self.__abbreviations['Short'] == program_name, 'Long'].iloc[0]
         return program_name
+
+    # Convert from a program code to the full name
+    # WARN: This can throw errors when the program code is not found.. handle at caller.
+    def __translate_program_code(self, program_code: str) -> str:
+        return self.__program_codes.loc[self.__program_codes['Code'] == program_code, 'Long'].iloc[0]
+
+    # Get program enrollment numbers
+    # WARN: This can throw errors when the program code is not found.. handle at caller.
+    def enrollment_number_lookup(self, program_code: str) -> int:
+        return int(self.__program_codes.loc[self.__program_codes['Code'] == program_code, 'Enrollment'].iloc[0])
 
     # Check if we have data on a given program
     def program_data_exists(self, program_name: str) -> bool:
@@ -71,3 +84,6 @@ if __name__ == "__main__":
     admissions_data = AdmissionsData(2021)
     cs_data = admissions_data.get_program_data('Computer Science')
     cs_data2 = admissions_data.get_program_data('CS')
+
+    assert(cs_data == cs_data2)
+    assert(admissions_data.enrollment_number_lookup('WCS') == 345)
