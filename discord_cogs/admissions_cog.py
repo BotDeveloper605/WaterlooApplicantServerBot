@@ -21,8 +21,32 @@ class AdmissionsCog(commands.Cog):
         print('Admissions Officer Cog has been loaded into {name} and is on the case!'.format(name = self.bot.user.name))
         print('=======================================')
 
-    @commands.command(name='ratemychancesbot')
-    async def on_message(self, ctx: commands.context.Context, arg):
-        print(arg)
 
+    # Teach people how to use ratemychances command
+    def __usage_message_ratemychances(self):
+        usage = """
+            Please use the command in the following format:
+            
+            !ratemychances program=PROGRAM average=AVERAGE [ type=TYPE ]
+
+            where:
+                - (optional) TYPE is one of [101, 105, 105D, 105F]
+        """
+
+        return usage
+
+
+    @commands.command(name='ratemychances')
+    async def on_message(self, ctx: commands.context.Context, *args):
+        
+        # Don't want to talk to ourself
+        if (ctx.author.id == self.bot.user.id):
+            return
+
+        if (len(args) == 0):
+            await ctx.send(self.__usage_message_ratemychances())
+            return
+
+        print(args)
+        
         await ctx.send('no')
