@@ -9,19 +9,31 @@ class ApplicantField(ABC):
 
     @classmethod
     @abstractmethod
+    def field_name(cls) -> str:
+        pass
+
+    @classmethod
+    @abstractmethod
     def is_valid(cls, value: str) -> bool:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def invalid_hint(cls) -> str:
         pass
 
     @classmethod
     @abstractmethod
     def translate(cls, value: str) -> any:
         pass
-
-    #TODO: More verbose errors - reqyuire an error message generation?
     
 
 class GradeAverage(ApplicantField):
     # Percentage grade average in [0, 100]
+
+    @classmethod
+    def field_name(cls) -> str:
+        return "AVERAGE"
 
     @classmethod
     def is_valid(cls, value: str) -> bool:
@@ -34,16 +46,28 @@ class GradeAverage(ApplicantField):
             return True
 
     @classmethod
+    def invalid_hint(cls) -> str:
+        return "{field_name}: must be decimal number in range [0, 100]".format(field_name = cls.field_name())
+
+    @classmethod
     def tranlsate(cls, value: str) -> float:
         return float(value)
 
 class ApplicationType(ApplicantField):
 
     APPLICANT_TYPES = [ '101', '105', '105D', '105F' ]
+
+    @classmethod
+    def field_name(cls) -> str:
+        return "TYPE"
     
     @classmethod
     def is_valid(cls, value: str) -> bool:
-        return value in cls.APPLICANT_TYPESs
+        return value in cls.APPLICANT_TYPES
+
+    @classmethod
+    def invalid_hint(cls) -> str:
+        return "{field_name}: must be one of [101, 105, 105D, 105F]".format(field_name = cls.field_name())
 
     @classmethod
     def translate(cls, value: str) -> str:
@@ -56,8 +80,16 @@ class Program(ApplicantField):
     program_codes = pandas.read_csv('data_model/program_codes.csv')
 
     @classmethod
+    def field_name(cls) -> str:
+        return "PROGRAM"
+
+    @classmethod
     def is_valid(cls, value: str) -> bool:
         return value in cls.program_codes['Code'].unique()
+
+    @classmethod
+    def invalid_hint(cls) -> str:
+        return "{field_name}: must be a Waterloo OUAC program application code".format(field_name = cls.field_name())
 
     @classmethod
     def translate(cls, value: str) -> str:

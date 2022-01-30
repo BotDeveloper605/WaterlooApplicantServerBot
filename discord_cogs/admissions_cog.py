@@ -1,5 +1,6 @@
 from typing import Dict, Callable
 from discord.ext import commands
+from numpy import average
 
 from data_model.admissions_data import AdmissionsData
 from data_model.admission_types import ApplicantField, GradeAverage, ApplicationType, Program
@@ -18,18 +19,20 @@ class AdmissionsCog(commands.Cog):
     # Teach people how to use ratemychances command
     def __error_usage_message_ratemychances(self):
         # TODO: auto generate these statements - shoudln't need to double check these..
-        usage = """
+        return """
             Please use the command in the following format:
             
             !ratemychances program=PROGRAM_CODE average=AVERAGE [ type=TYPE ]
 
             where:
-                - PROGRAM_CODE is the code from OUAC (only Waterloo program codes currently supported)
-                - AVERAGE is your *percentage* based average (please convert before usings)
-                - (optional) TYPE is one of [101, 105, 105D, 105F]
-        """
+                - {program}
+                - {average}
+                - ( Optional ) {app_type}
+        """.format(
+            program = Program.invalid_hint(), 
+            average = GradeAverage.invalid_hint(), 
+            app_type = ApplicationType.invalid_hint())
 
-        return usage
 
     def parse_args(self, args_list: list) -> dict:
         return dict(map(lambda x: x.split("="), args_list))
@@ -47,7 +50,7 @@ class AdmissionsCog(commands.Cog):
                 return False
             elif (not required_args[req_arg].is_valid(arg_dict[req_arg])):
                 # We found the field, but it is not the right type
-                await ctx.send('Could not cast {req_field} to be type {req_type}'.format(req_field = req_arg, req_type = required_args[req_arg].__name__))
+                await ctx.send(required_args[req_arg].invalid_hint())
                 await ctx.send(error_message_generatror())
                 return False
             else:
@@ -72,6 +75,7 @@ class AdmissionsCog(commands.Cog):
             
             # ======= After this line, we should be guaranteed required arguments & matching types =====
 
+            
 
         except Exception as e:
             await ctx.send('Error processing request')
