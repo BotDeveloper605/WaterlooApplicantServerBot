@@ -1,7 +1,6 @@
-from collections import namedtuple
 import pandas
 
-SummaryData = namedtuple('SummaryData', ['low', 'high', 'num_applicants'])
+from admission_types import SummaryData
 
 class AdmissionsData():
     # AdmissionsData Allows for easier common queries against admissions data
