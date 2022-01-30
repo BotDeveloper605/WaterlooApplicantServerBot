@@ -27,7 +27,7 @@ class AdmissionsData():
 
         # Remove Text Grades 
         # .. sorry IB kids.. I'll learn your system one day
-        df = df[ df['Grade Percentage'].apply(lambda x: x.isnumeric()) ].copy()
+        df = df[ df['Grade Percentage'].apply(lambda x: x.replace('.', '', 1).isnumeric()) ].copy()
         df['Grade Percentage'] = df['Grade Percentage'].astype("float")
 
         # TODO: Condtionally drop no Type, Date Accepted?
