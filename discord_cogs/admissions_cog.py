@@ -1,11 +1,12 @@
 from discord.ext import commands
 
 from data_model.admission_types import GradeAverage, Program
+from discord_cogs.argument_types import AdmissionsOfficerMode
 from data_model.admissions_data import AdmissionsData
 from discord_cogs.argument_handler import ArugmentHandler
 
 class AdmissionsCog(commands.Cog):
-    # This class focuses on commands related to admissions
+    # This class focuses on commands related to admissions with robotic professionalism
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -22,11 +23,15 @@ class AdmissionsCog(commands.Cog):
             return
 
         req_args = {'program': Program, 'average': GradeAverage}
-        opt_args = {}
+        opt_args = {'mode': AdmissionsOfficerMode}
 
         arg_dict = await ArugmentHandler.parse_command(ctx, given_args, req_args, opt_args)
 
         if arg_dict is None:
+            return
+
+        if (arg_dict.get('mode', 'NORMAL') == 'EVIL'):
+            await self.bot.get_cog('AdmissionsEvilCog').rate_my_chances(ctx, arg_dict)
             return
 
         arg_program = arg_dict['program']
@@ -61,7 +66,9 @@ class AdmissionsCog(commands.Cog):
             chances_message += "Looks like you're pretty competitive o.o\n"
 
 
-        chances_message += "(Keep in mind we're only seeing {pool_size_pct:.2f} \% of the pool)".format(
+        chances_message += "(Keep in mind we're only seeing ({numerator} / {denominator}) =  {pool_size_pct:.2f} \% of the pool)".format(
+            numerator = summary_data.num_applicants,
+            denominator = Program.get_enrollment_numbers(arg_program),
             pool_size_pct = summary_data.num_applicants / Program.get_enrollment_numbers(arg_program) * 100
         )
 
