@@ -1,6 +1,5 @@
 import os
 from dotenv import load_dotenv
-import discord
 from discord.ext import commands
 
 from discord_cogs.admissions_cog import AdmissionsCog

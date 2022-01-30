@@ -1,4 +1,3 @@
-from msilib import change_sequence
 from discord.ext import commands
 
 from data_model.admission_types import GradeAverage, Program
