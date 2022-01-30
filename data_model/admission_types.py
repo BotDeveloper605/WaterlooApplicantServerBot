@@ -26,6 +26,8 @@ class ApplicantField(ABC):
     @abstractmethod
     def translate(cls, value: str) -> any:
         pass
+
+    # Add sample / example value?
     
 
 class GradeAverage(ApplicantField):
