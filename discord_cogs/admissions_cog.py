@@ -3,7 +3,7 @@ from discord.ext import commands
 from numpy import average
 
 from data_model.admissions_data import AdmissionsData
-from data_model.admission_types import ApplicantField, GradeAverage, ApplicationType, Program
+from data_model.admission_types import ApplicantField, GradeAverage, Program
 
 class AdmissionsCog(commands.Cog):
 
@@ -15,23 +15,19 @@ class AdmissionsCog(commands.Cog):
         print('Admissions Officer has been loaded into {name} and is on the case!'.format(name = self.bot.user.name))
         print('=======================================')
 
-    # TODO: Should we house all the error functions in a different class? - too tightly coupled?
-    # Teach people how to use ratemychances command
+    # Teach people how to use ratemychances command - todo add more options? (or new commands)
     def __error_usage_message_ratemychances(self):
-        # TODO: auto generate these statements - shoudln't need to double check these..
         return """
             Please use the command in the following format:
             
-            !ratemychances program=PROGRAM_CODE average=AVERAGE [ type=TYPE ]
+            !ratemychances program=PROGRAM_CODE average=AVERAGE
 
             where:
                 - {program}
                 - {average}
-                - ( Optional ) {app_type}
         """.format(
             program = Program.invalid_hint(), 
-            average = GradeAverage.invalid_hint(), 
-            app_type = ApplicationType.invalid_hint())
+            average = GradeAverage.invalid_hint())
 
 
     def parse_args(self, args_list: list) -> dict:
@@ -75,7 +71,7 @@ class AdmissionsCog(commands.Cog):
             
             # ======= After this line, we should be guaranteed required arguments & matching types =====
 
-            
+
 
         except Exception as e:
             await ctx.send('Error processing request')
