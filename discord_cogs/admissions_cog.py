@@ -1,11 +1,3 @@
-
-# ========================= Fix asyncio ============================
-# (need this if running in interactive python terminal on VS Code)
-# import nest_asyncio
-# nest_asyncio.apply()
-# __import__('IPython').embed()
-# ==================================================================
-
 from typing import Type, Dict, Callable
 from discord.ext import commands
 
