@@ -1,7 +1,8 @@
-from typing import Type, Dict, Callable
+from typing import Dict, Callable
 from discord.ext import commands
 
-from data_model.admissions_data import AdmissionsData, SummaryData
+from data_model.admissions_data import AdmissionsData
+from data_model.admission_types import ApplicantField, GradeAverage, ApplicationType, Program
 
 class AdmissionsCog(commands.Cog):
 
@@ -13,9 +14,10 @@ class AdmissionsCog(commands.Cog):
         print('Admissions Officer has been loaded into {name} and is on the case!'.format(name = self.bot.user.name))
         print('=======================================')
 
-
+    # TODO: Should we house all the error functions in a different class? - too tightly coupled?
     # Teach people how to use ratemychances command
     def __error_usage_message_ratemychances(self):
+        # TODO: auto generate these statements - shoudln't need to double check these..
         usage = """
             Please use the command in the following format:
             
@@ -36,31 +38,31 @@ class AdmissionsCog(commands.Cog):
     # SIDE EFFECT:
     #   - This will properly cast as many arguments of arg_dict as possible
     #       (your strings will be gone.)
-    async def check_required_args(self, ctx, arg_dict: Dict[str, str], required_args: Dict[str, Type], error_message_generatror: Callable) -> bool:
-    
+    async def check_required_args(self, ctx, arg_dict: Dict[str, str], required_args: Dict[str, ApplicantField], error_message_generatror: Callable) -> bool:
         for req_arg in required_args:
             if (req_arg not in arg_dict):
+                # We could not find the require field
                 await ctx.send('{req_field} was not specified.'.format(req_field = req_arg))
                 await ctx.send(error_message_generatror())
                 return False
+            elif (not required_args[req_arg].is_valid(arg_dict[req_arg])):
+                # We found the field, but it is not the right type
+                await ctx.send('Could not cast {req_field} to be type {req_type}'.format(req_field = req_arg, req_type = required_args[req_arg].__name__))
+                await ctx.send(error_message_generatror())
+                return False
             else:
-                try:
-                    arg_dict[req_arg] = required_args[req_arg](arg_dict[req_arg])
-                except Exception as e:
-                    await ctx.send('Could not cast {req_field} to be type {req_type}'.format(req_field = req_arg, req_type = required_args[req_arg].__name__))
-                    await ctx.send(error_message_generatror())
-                    return False
+                # We found the type and it's what we expect
+                arg_dict[req_arg] = required_args[req_arg].translate(arg_dict[req_arg])
         return True
 
     @commands.command(name='ratemychances')
     async def on_message(self, ctx: commands.context.Context, *args):
-        
         # Don't want to talk to ourself
         if (ctx.author.id == self.bot.user.id):
             return
 
         try:
-            req_args = {'program': str, 'average': float}
+            req_args = {'program': Program, 'average': GradeAverage}
             arg_dict = self.parse_args(args)
 
             # A radioactively toxic line of code, but damn, it felt good to write 
@@ -69,6 +71,7 @@ class AdmissionsCog(commands.Cog):
                 return
             
             # ======= After this line, we should be guaranteed required arguments & matching types =====
+
 
         except Exception as e:
             await ctx.send('Error processing request')
@@ -79,6 +82,4 @@ class AdmissionsCog(commands.Cog):
             await ctx.send(self.__error_usage_message_ratemychances())
             return
 
-
-        
         await ctx.send('no')

@@ -1,6 +1,6 @@
 import pandas
 
-from admission_types import SummaryData, Program
+from data_model.admission_types import SummaryData, Program
 
 class AdmissionsData():
     # AdmissionsData Allows for easier common queries against admissions data

@@ -16,6 +16,8 @@ class ApplicantField(ABC):
     @abstractmethod
     def translate(cls, value: str) -> any:
         pass
+
+    #TODO: More verbose errors - reqyuire an error message generation?
     
 
 class GradeAverage(ApplicantField):
@@ -50,8 +52,8 @@ class ApplicationType(ApplicantField):
 
 class Program(ApplicantField):
 
-    abbreviations = pandas.read_csv('abbreviations.csv')
-    program_codes = pandas.read_csv('program_codes.csv')
+    abbreviations = pandas.read_csv('data_model/abbreviations.csv')
+    program_codes = pandas.read_csv('data_model/program_codes.csv')
 
     @classmethod
     def is_valid(cls, value: str) -> bool:
