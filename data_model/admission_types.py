@@ -72,6 +72,17 @@ class Program(ApplicantField):
         return cls.program_codes.loc[cls.program_codes['Long'] == program_long, 'Code'].iloc[0]
 
     @classmethod
-    # This will throw if program code not present.. caller's problem
+    # This will throw if program short (abbreviation) not present.. caller's problem
     def get_short_to_long(cls, program_short: str) -> str:
         return cls.abbreviations.loc[cls.abbreviations['Short'] == program_short, 'Long'].iloc[0]
+
+    @classmethod
+    # TODO: Does this really fit the theme of the current class?
+    #       - this is turning more into a little data store... not necessarily a wrong direction..
+    # Return number of people enrolled in a program, according to OUAC
+    def get_enrollment_numbers(cls, program_code: str) -> int:
+        return cls.program_codes.loc[cls.program_codes['Code'] == program_code, 'Enrollment'].iloc[0]
+
+
+if __name__ == "__main__":
+    assert(Program.get_enrollment_numbers('WCS') == 345)
