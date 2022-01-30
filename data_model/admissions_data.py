@@ -21,6 +21,9 @@ class AdmissionsData():
         self.__data = self.__data[self.__headers]
 
     def __drop_invalid(self, df: pandas.DataFrame) -> pandas.DataFrame:
+        if (len(df) == 0):
+            # Empty dataframe
+            return df
 
         # Remove Text Grades 
         # .. sorry IB kids.. I'll learn your system one day
@@ -44,10 +47,12 @@ class AdmissionsData():
         if (applicant_type is not None):
             data_slice = data_slice[ data_slice['Type'].str.contains(applicant_type) ]
 
+        slice_empty = len(data_slice) == 0
+
         return SummaryData(
-                data_slice['Grade Percentage'].min(), 
-                data_slice['Grade Percentage'].max(),
-                len(data_slice['Grade Percentage']))
+                None if slice_empty else data_slice['Grade Percentage'].min(), 
+                None if slice_empty else data_slice['Grade Percentage'].max(),
+                len(data_slice))
 
 
 if __name__ == "__main__":
