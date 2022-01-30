@@ -13,7 +13,7 @@ class AdmissionsData():
     # TODO: protect against bad queries?
     def __init__(self, year: int):
         # Load program data
-        self.__data = pandas.read_csv("../data/waterloo_%d.csv" % year)
+        self.__data = pandas.read_csv("data/waterloo_%d.csv" % year)
 
         self.__headers = ['Status', 'Program', 'Co-op', 'Grade Percentage', 'Date Accepted', 'Type', 'Other']
 

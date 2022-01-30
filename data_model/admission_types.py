@@ -52,7 +52,7 @@ class GradeAverage(ApplicantField):
         return "{field_name}: must be decimal number in range [0, 100]".format(field_name = cls.field_name())
 
     @classmethod
-    def tranlsate(cls, value: str) -> float:
+    def translate(cls, value: str) -> float:
         return float(value)
 
 class ApplicationType(ApplicantField):
