@@ -1,9 +1,8 @@
-from dis import Instruction
 from typing import Dict, Any
 from discord.ext import commands
 from functools import reduce
 
-from data_model.admission_types import ApplicantField
+from types_util import ApplicantField
 
 
 class ArugmentHandler():
