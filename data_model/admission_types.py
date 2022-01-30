@@ -1,34 +1,11 @@
-from abc import ABC, abstractmethod
+
 from collections import namedtuple
 import pandas
 
+from types_util import ApplicantField
 
 SummaryData = namedtuple('SummaryData', ['low', 'high', 'num_applicants'])
 
-class ApplicantField(ABC):
-
-    @classmethod
-    @abstractmethod
-    def field_name(cls) -> str:
-        pass
-
-    @classmethod
-    @abstractmethod
-    def is_valid(cls, value: str) -> bool:
-        pass
-
-    @classmethod
-    @abstractmethod
-    def invalid_hint(cls) -> str:
-        pass
-
-    @classmethod
-    @abstractmethod
-    def translate(cls, value: str) -> any:
-        pass
-
-    # Add sample / example value?
-    
 
 class GradeAverage(ApplicantField):
     # Percentage grade average in [0, 100]
